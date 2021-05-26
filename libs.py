@@ -12,11 +12,11 @@ def login_rnis(browser, user_config):
     """Функция залогинивается в РНИС с заданными логином и паролем.
     """
     browser.get('https://rnis.mosreg.ru')
-    WebDriverWait(browser, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="root"]/div/form/div[1]/input')))
+    WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="root"]/div/form/div[1]/input')))
     browser.find_element_by_xpath('//*[@id="root"]/div/form/div[1]/input').send_keys(user_config['login'])
     browser.find_element_by_xpath('//*[@id="root"]/div/form/div[2]/div/input').send_keys(user_config['password'])
     browser.find_element_by_xpath('//*[@id="root"]/div/form/a').click()
-    WebDriverWait(browser, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="Home"]')))
+    WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="Home"]')))
     # Для чистых запросов
     session = requests.Session()
     cookies = browser.get_cookies()
@@ -143,7 +143,8 @@ def download_report(session, item, name=None):
     created_at = pd.to_datetime(item['created_at'])
     if not name:
         name = report_name + '_' + created_at.strftime('%d-%m-%Y_%H-%M-%S') + '.xls'
-    file_path = os.path.expanduser('~\\Downloads\\') + name
+    # file_path = os.path.expanduser('~\\Downloads\\') + name
+    file_path = 'Отчеты\\' + name
     payload = {'uuid': uuid, 'format': 'xls', 'name': name}
     file = session.get('https://api.rnis.mosreg.ru/ajax/download_report', params=payload)
     with open(file_path, 'wb') as f:
@@ -155,8 +156,8 @@ def download_report(session, item, name=None):
 def click_checkboxs(browser, order_url):
     """Функция прокликивает все рейсы в одном наряде.
     """
-    def _find_checkboxs(browser):
-        """Функция ищет все чекбоксы на текущей странице.
+    def _click(browser):
+        """Функция кликает все чекбоксы на текущей странице.
         """
         try:
             checkboxs = browser.find_elements_by_xpath('//div[@class="snake-info__checkbox"]')
@@ -164,12 +165,21 @@ def click_checkboxs(browser, order_url):
                 if box.text == 'Незачет':
                     box.click()
         except EC.StaleElementReferenceException:
-            _find_checkboxs(browser)
+            _click(browser)
+    def _save(browser):
+        """Функция обрабатывает сохранение изменений.
+        """
+        browser.find_element_by_xpath('//div[@class="b-modal__header-link _save"]').click()
+        result = WebDriverWait(browser, 100).until(
+            lambda driver: driver.find_element(By.XPATH, '//div[@class="changes changes-in-order changes-success"]') or\
+                   driver.find_element(By.XPATH, '//div[@class="changes changes-in-order changes-fail"]'))
+        if result.text == 'Изменения не сохранены':
+            print('Повторное сохранение')
+            _save(browser)
     browser.get(order_url)
     WebDriverWait(browser, 20).until(EC.presence_of_element_located((By.XPATH, '//div[@class="accordion__item"]')))
-    _find_checkboxs(browser)
-    browser.find_element_by_xpath('//div[@class="b-modal__header-link _save"]').click()
-    WebDriverWait(browser, 5).until(EC.presence_of_element_located((By.XPATH, '//div[@class="changes changes-in-order changes-success"]')))
+    _click(browser)
+    _save(browser)
 
 
 def get_list_orders(session, route_number, start_date, end_date):
