@@ -4,8 +4,6 @@ import configparser
 import pandas as pd
 from libs import *
 from tqdm.auto import tqdm
-from multiprocessing.dummy import Pool
-import numpy as np
 
 ROOT_REPORT = 'Отчеты\\'
 
