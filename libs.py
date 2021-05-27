@@ -35,6 +35,13 @@ def get_carrier(session, name):
     return r['payload']['items'][0]
 
 
+def _filter_routes(item):
+    if (item['uuid'] == '0d3748ba-eb89-11e7-887f-37ce4521a92f') or\
+       (item['uuid'] == '10ee3fbc-ec07-11e7-88bc-e9430eadbaa5'):
+        return False
+    else:
+        return True
+
 def get_route(session, carrier, number):
     """Функция находит по объекты организации и номеру маршрута маршрут из РНИС.
     """
@@ -45,7 +52,9 @@ def get_route(session, carrier, number):
                         'token': session.cookies['token']},
             'payload': {}}
     r = session.post('https://api.rnis.mosreg.ru/ajax/request?com.rnis.geo.action.route.list.short', json=data).json()
-    return r['payload']['items'][0]
+    items = r['payload']['items']
+    items = list(filter(_filter_routes, items))
+    return items[0]
 
 
 def generation_report(session, carrier, route, start_date, end_date):
