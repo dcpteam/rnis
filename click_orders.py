@@ -4,6 +4,7 @@ import configparser
 import pandas as pd
 from libs import *
 from tqdm.auto import tqdm
+import os
 
 ROOT_REPORT = 'Отчеты\\'
 

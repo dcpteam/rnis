@@ -39,18 +39,20 @@ def _filter_routes(item):
     else:
         return True
 
-def get_route(session, carrier, number):
+def get_route(session, carrier, route_number, number):
     """Функция находит по объекты организации и номеру маршрута маршрут из РНИС.
     """
     data = {'headers': {'meta': {'filters': {'withComponent': 'kiutr',
                                              'withCarriers': [carrier['uuid']]},
-                                 'search': str(number),
+                                 'search': str(route_number),
                                  'pagination': {'page': 1, 'limit': 50}},
                         'token': session.cookies['token']},
             'payload': {}}
     r = session.post('https://api.rnis.mosreg.ru/ajax/request?com.rnis.geo.action.route.list.short', json=data).json()
     items = r['payload']['items']
     items = list(filter(_filter_routes, items))
+    items = list(filter(lambda x: x['number'] == number, items))
+    assert items, f"Не найден маршрут {carrier['name_full']} {route_number} {number}"
     return items[0]
 
 
@@ -237,3 +239,7 @@ def get_order_info(session, uuid_order):
         'payload': {'uuid': uuid_order}}
     r = session.post('https://api.rnis.mosreg.ru/ajax/request?com.rnis.geo.action.order.get', json=payload).json()
     return r
+
+def make_hyperlink(url):
+    if not pd.isna(url):
+        return '=HYPERLINK("%s", "%s")' % (url, url)
