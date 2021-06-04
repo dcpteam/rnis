@@ -1,6 +1,7 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 import requests
 import pandas as pd
 
@@ -185,9 +186,12 @@ def click_checkboxs(browser, order_url):
             print('Повторное сохранение')
             _save(browser)
     browser.get(order_url)
-    WebDriverWait(browser, 20).until(EC.presence_of_element_located((By.XPATH, '//div[@class="accordion__item"]')))
-    _click(browser)
-    _save(browser)
+    try:
+        WebDriverWait(browser, 30).until(EC.presence_of_element_located((By.XPATH, '//div[@class="accordion__item"]')))
+        _click(browser)
+        _save(browser)
+    except TimeoutException:
+        print(order_url)
 
 
 def get_list_orders(session, route_number, start_date, end_date):

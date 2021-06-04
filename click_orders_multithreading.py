@@ -23,16 +23,18 @@ def clicker(df):
     with open(log_path, 'a') as log_file:
         for _, row in tqdm(df.iterrows(), total=df.shape[0]):
             if row['processing_status'] == 'ended':
-                click_checkboxs(browser, f"https://rnis.mosreg.ru/kiutr/orders/{row['uuid']}")
-                log_file.write(row['uuid'] + '\n')
+                result = click_checkboxs(browser, f"https://rnis.mosreg.ru/kiutr/orders/{row['uuid']}")
+                if result:
+                    log_file.write(row['uuid'] + '\n')
+    browser.close()
 
 ROOT_REPORT = 'Отчеты\\'
 
 config = configparser.ConfigParser()
 config.read('passwords.ini')
 
-start_date = pd.to_datetime('2021-05-18')
-end_date = pd.to_datetime('2021-05-23')
+start_date = pd.to_datetime('2021-05-01')
+end_date = pd.to_datetime('2021-05-31')
 
 file_path = ROOT_REPORT + f"Свод_{start_date.strftime(r'%Y.%m.%d')}-{end_date.strftime(r'%Y.%m.%d')}_ссылки.xlsx"
 df = pd.read_excel(file_path, dtype=str)
