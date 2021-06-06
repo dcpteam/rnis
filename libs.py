@@ -190,8 +190,9 @@ def click_checkboxs(browser, order_url):
         WebDriverWait(browser, 30).until(EC.presence_of_element_located((By.XPATH, '//div[@class="accordion__item"]')))
         _click(browser)
         _save(browser)
+        return True
     except TimeoutException:
-        print(order_url)
+        return False
 
 
 def get_list_orders(session, route_number, start_date, end_date):
