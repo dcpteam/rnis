@@ -4,6 +4,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 import requests
 import pandas as pd
+import time
 
 
 def login_rnis(browser, user_config):
@@ -147,6 +148,7 @@ def get_report_list(session):
 def download_report(session, item, name=None):
     """Функция скачивет отчет по объекту из функции get_report_list.
     """
+    time.sleep(5)
     uuid = item['uuid']
     report_name = item['report_name']
     created_at = pd.to_datetime(item['created_at'])

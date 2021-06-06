@@ -5,6 +5,7 @@ import time
 import xlrd
 from libs import *
 from tqdm.auto import tqdm
+from glob import glob
 
 ROOT_REPORT = 'Отчеты\\'
 
@@ -48,6 +49,7 @@ while report_list:
             report_list.remove(report)
         time.sleep(5)
 
+# file_list = glob(ROOT_REPORT + '*')
 df = []
 for file in file_list:
     try:
