@@ -12,8 +12,8 @@ config.read('passwords.ini')
 browser = webdriver.Chrome()
 browser, session = login_rnis(browser, config['РНИС админ'])
 
-start_date = pd.to_datetime('2021-05-01')
-end_date = pd.to_datetime('2021-05-31')
+start_date = pd.to_datetime('2021-06-01')
+end_date = pd.to_datetime('2021-06-09')
 
 file_path = ROOT_REPORT + f"Свод_{start_date.strftime(r'%Y.%m.%d')}-{end_date.strftime(r'%Y.%m.%d')}.xlsx"
 df = pd.read_excel(file_path, dtype=str)
