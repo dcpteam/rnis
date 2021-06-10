@@ -15,8 +15,8 @@ config.read('passwords.ini')
 browser = webdriver.Chrome()
 browser, session = login_rnis(browser, config['РНИС отчеты'])
 
-start_date = pd.to_datetime('2021-05-01')
-end_date = pd.to_datetime('2021-05-31')
+start_date = pd.to_datetime('2021-06-01')
+end_date = pd.to_datetime('2021-06-09')
 
 routes = pd.read_excel('Маршруты.xlsx', dtype=str)
 
@@ -30,7 +30,6 @@ for _, row in tqdm(routes.iterrows(), total=routes.shape[0]):
     if r['success'] == False:
         print('Ошибка генерации отчета', r['errors'])
     time.sleep(1)
-time.sleep(5)
 
 def _filter_item(item, report):
     if (item['report_uri'] == 'summary_route_turns_report') and ('route' in item['parameters']):
