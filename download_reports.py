@@ -6,17 +6,21 @@ import xlrd
 from libs import *
 from tqdm.auto import tqdm
 from glob import glob
+import os
 
 ROOT_REPORT = 'Отчеты\\'
 
+if glob(ROOT_REPORT + '*'):
+    [os.remove(filepath) for filepath in glob(ROOT_REPORT + '*')]
+
 config = configparser.ConfigParser()
-config.read('passwords.ini')
+config.read('config.ini')
 
 browser = webdriver.Chrome()
 browser, session = login_rnis(browser, config['РНИС отчеты'])
 
-start_date = pd.to_datetime('2021-06-01')
-end_date = pd.to_datetime('2021-06-09')
+start_date = pd.to_datetime(config['Даты отчета']['start_date'], yearfirst=True)
+end_date = pd.to_datetime(config['Даты отчета']['end_date'], yearfirst=True)
 
 routes = pd.read_excel('Маршруты.xlsx', dtype=str)
 

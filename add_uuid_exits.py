@@ -7,13 +7,13 @@ from tqdm.auto import tqdm
 ROOT_REPORT = 'Отчеты\\'
 
 config = configparser.ConfigParser()
-config.read('passwords.ini')
+config.read('config.ini')
 
 browser = webdriver.Chrome()
 browser, session = login_rnis(browser, config['РНИС админ'])
 
-start_date = pd.to_datetime('2021-06-01')
-end_date = pd.to_datetime('2021-06-09')
+start_date = pd.to_datetime(config['Даты отчета']['start_date'], yearfirst=True)
+end_date = pd.to_datetime(config['Даты отчета']['end_date'], yearfirst=True)
 
 file_path = ROOT_REPORT + f"Свод_{start_date.strftime(r'%Y.%m.%d')}-{end_date.strftime(r'%Y.%m.%d')}.xlsx"
 df = pd.read_excel(file_path, dtype=str)
