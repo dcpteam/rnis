@@ -148,7 +148,6 @@ def get_report_list(session):
 def download_report(session, item, name=None):
     """Функция скачивет отчет по объекту из функции get_report_list.
     """
-    time.sleep(5)
     uuid = item['uuid']
     report_name = item['report_name']
     created_at = pd.to_datetime(item['created_at'])
@@ -158,6 +157,10 @@ def download_report(session, item, name=None):
     file_path = 'Отчеты\\' + name
     payload = {'uuid': uuid, 'format': 'xls', 'name': name}
     file = session.get('https://api.rnis.mosreg.ru/ajax/download_report', params=payload)
+    if not file:
+        print('Повтор скачивания')
+        time.sleep(5)
+        return download_report(session, item, name)
     with open(file_path, 'wb') as f:
         f.write(file.content)
     print('Сохранен', file_path)
