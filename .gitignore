@@ -1,6 +1,8 @@
-__pycache__
+﻿__pycache__
 .ipynb_checkpoints
 .idea
 .vscode
-passwords.ini
+config.ini
 Отчеты/
+Маршруты.xlsx
+chromedriver.exe
