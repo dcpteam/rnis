@@ -49,7 +49,8 @@ log = [item for sublist in log_list for item in sublist]
 df = df[~df['uuid'].isin(log)]
 print(df.shape[0])
 
-n_workers = 6
+
+n_workers = int(input('Количество потоков: '))
 array_df = np.array_split(df, n_workers)
 
 pool = Pool(n_workers)

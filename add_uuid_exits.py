@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 import configparser
 import pandas as pd
 from libs import *
@@ -9,7 +10,10 @@ ROOT_REPORT = 'Отчеты\\'
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-browser = webdriver.Chrome()
+chrome_options = Options()
+chrome_options.add_argument('log-level=3')
+chrome_options.add_argument("--headless")
+browser = webdriver.Chrome(options=chrome_options)
 browser, session = login_rnis(browser, config['РНИС админ'])
 
 start_date = pd.to_datetime(config['Даты отчета']['start_date'], yearfirst=True)
