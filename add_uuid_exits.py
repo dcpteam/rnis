@@ -42,4 +42,6 @@ df['Ссылка на план-наряд'] = 'https://rnis.mosreg.ru/kiutr-cont
 df['Ссылка на план-наряд'] = df['Ссылка на план-наряд'].apply(make_hyperlink)
 file_path = ROOT_REPORT + f"Свод_{start_date.strftime(r'%Y.%m.%d')}-{end_date.strftime(r'%Y.%m.%d')}_ссылки.xlsx"
 df.to_excel(file_path)
+file_path = ROOT_REPORT + f"Свод_{start_date.strftime(r'%Y.%m.%d')}-{end_date.strftime(r'%Y.%m.%d')}_ссылки_закрытые.xlsx"
+df.loc[df['processing_status'] == 'closed', 'Ссылка на план-наряд'].drop_duplicates().to_excel(file_path, index=False)
 browser.close()
